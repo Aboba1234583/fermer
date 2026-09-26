@@ -1,42 +1,51 @@
-printf("[6] Любимый ресурс\n");
-        printf("Ваш выбор: ");
+int current_hour = 8;
+    int inventory[INVENTORY_SIZE] = {4, 6, 0, 2, 0, 3, 8, 0, 1, 0};
 
-        
-        scanf("%d", &choice);
-        if (scanf("%d", &choice) != 1) {
-            printf("Ошибка: нужно ввести число!\n");
-            while (getchar() != '\n');
-            continue;
-        }
+    const char *item_names[10] = {
+        "пусто", "дерево", "камень", "семена",
+        "лопата", "грабли", "тяпка", "телега",
+        "лейка", "корзина"
+    };
 
-        switch (choice) {
-            case 0:
-                printf("Выход.\n");
-                return 0;
-            case 1:
-                printf("Текущее время: День %d, %02d:00\n", current_day, current_hour);
+    int choice;
+    
+
+    while (1) {
+@@ -54,9 +60,36 @@ int main(void) {
                 break;
-            case 2:
-            case 2: {
-                int hours;
-                printf("Сколько часов потратить на работу? ");
-                if (scanf("%d", &hours) != 1) {
+            }
+            case 3:
+                for (int i = 0; i < INVENTORY_SIZE; i++) {
+                    printf("Слот %d: [%d] (%s)\n", i, inventory[i], item_names[inventory[i]]);
+                }
+                break;
+            case 4:
+            case 4: {
+                int index, id;
+                printf("Введите индекс слота (0-%d): ", INVENTORY_SIZE - 1);
+                if (scanf("%d", &index) != 1) {
                     printf("Ошибка: нужно ввести число!\n");
                     while (getchar() != '\n');
                     break;
                 }
-                if (hours < 0) {
-                    printf("Часы не могут быть отрицательными!\n");
+                if (index < 0 || index >= INVENTORY_SIZE) {
+                    printf("Ошибка: индекс вне границ массива (0-%d)!\n", INVENTORY_SIZE - 1);
                     break;
                 }
-                current_hour += hours;
-                while (current_hour >= 24) {
-                    current_hour -= 24;
-                    current_day++;
+                printf("Введите ID предмета (0-9): ");
+                if (scanf("%d", &id) != 1) {
+                    printf("Ошибка: нужно ввести число!\n");
+                    while (getchar() != '\n');
+                    break;
                 }
-                printf("Прошло %d часов.\n", hours);
+                if (id < 0 || id > 9) {
+                    printf("Ошибка: такого ID не существует!\n");
+                    break;
+                }
+                inventory[index] = id;
+                printf("Предмет %d положен в слот %d.\n", id, index);
                 break;
             }
-            case 3:
+            case 5:
                 break;
-            case 4:
+            case 6:
