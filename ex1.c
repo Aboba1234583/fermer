@@ -1,6 +1,7 @@
 printf("[6] Любимый ресурс\n");
         printf("Ваш выбор: ");
 
+        
         scanf("%d", &choice);
         if (scanf("%d", &choice) != 1) {
             printf("Ошибка: нужно ввести число!\n");
