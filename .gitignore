@@ -1,0 +1,17 @@
+*.o
+*.out
+*.exe
+*.a
+*.so
+*.dll
+.vscode/
+.vs/
+.idea/
+*.swp
+*.swo
+*.tmp
+*~
+.DS_Store
+Thumbs.db
+*.log
+a.out
