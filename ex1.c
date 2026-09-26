@@ -1,5 +1,6 @@
  printf("Предмет %d положен в слот %d.\n", id, index);
                 break;
+                
             }
             case 5:
             case 5: {
@@ -47,5 +48,4 @@
             }
             default:
                 printf("Неверный пункт меню!\n");
-                
         }
