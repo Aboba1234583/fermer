@@ -50,7 +50,6 @@ void print_favorite_resource(int fav_id, const int inventory[],
 void write_diary_to_file(const char *filename, const char *text);
 
 // утилиты ввода(тело)
-
 void clear_input_buffer(void) {
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
