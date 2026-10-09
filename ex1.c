@@ -443,6 +443,7 @@ int main(void) {
             }
 
             //обработка рецептов крафта
+            
             case 9:
                 process_recipes(FILENAME_INPUT, FILENAME_OUTPUT,
                                 inventory, INVENTORY_SIZE, item_names);
