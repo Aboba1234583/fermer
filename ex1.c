@@ -46,7 +46,9 @@ void print_search_result(const char *search_name, int item_id,
 void print_favorite_resource(int fav_id, const int inventory[],
                              char item_names[][MAX_NAME_LEN], int size);
 
+                             
 // работа с файлами
+
 void write_diary_to_file(const char *filename, const char *text);
 
 // утилиты ввода(тело)
