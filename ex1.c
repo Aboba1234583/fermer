@@ -441,9 +441,8 @@ int main(void) {
                 write_diary_to_file(FILENAME_DIARY, diary);
                 break;
             }
-
             //обработка рецептов крафта
-            
+
             case 9:
                 process_recipes(FILENAME_INPUT, FILENAME_OUTPUT,
                                 inventory, INVENTORY_SIZE, item_names);
