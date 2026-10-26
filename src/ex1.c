@@ -460,6 +460,7 @@ void adventure_mode(int *current_day, int *current_hour, char farmer_name[]) {
 
 // функции
 int main(void) {
+    srand(time(NULL));
     char item_names[MAX_ITEMS][MAX_NAME_LEN];   
     int  inventory[INVENTORY_SIZE];            
     char farmer_name[MAX_FARMER_NAME];
@@ -491,8 +492,9 @@ int main(void) {
         printf("[7] Поиск предмета по названию\n");
         printf("[8] Записать состояние в дневник\n");
         printf("[9] Проверка рецептов крафта\n");
+        printf("[10] Отправиться в приключение\n");
 
-        choice = get_int_input("Ваш выбор: ", 0, 9);
+        choice = get_int_input("Ваш выбор: ", 0, 10);
 
         switch (choice) {
             case 0:   // выход
