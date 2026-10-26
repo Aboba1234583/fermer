@@ -1,0 +1,29 @@
+# Скомпилированные файлы
+*.o
+*.out
+*.exe
+*.a
+*.so
+*.dll
+farm
+
+# IDE
+.vscode/
+.vs/
+.idea/
+*.swp
+*.swo
+
+# Временные
+*.tmp
+*~
+*.log
+a.out
+
+# Системные
+.DS_Store
+Thumbs.db
+
+# Генерируемые программой файлы
+output.txt
+diary.txt
