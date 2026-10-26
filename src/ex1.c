@@ -587,7 +587,11 @@ int main(void) {
                                 inventory, INVENTORY_SIZE, item_names);
                 break;
 
-            default:
+            case 10:
+                adventure_mode(&current_day, &current_hour, farmer_name);
+                 break;
+
+                default:
                 printf("Неверный пункт меню!\n");
         }
     }
