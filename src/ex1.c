@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include <time.h> 
 
 #define INVENTORY_SIZE 10         
@@ -17,14 +18,15 @@
 
 #define EMPTY_SLOT_ID 0
 
-#define MAP_MIN_SIZE 5
 #define MAP_MAX_SIZE 30
-#define WALL '#'
-#define EMPTY '.'
-#define TREE 'T'
-#define STONE 'R'
-#define PLAYER '@'
+#define MAP_MIN_SIZE 5
 #define PORTAL 'P'
+#define PLAYER '@'
+#define STONE 'R'
+#define TREE 'T'
+#define EMPTY '.'
+#define WALL '#'
+
 
 //утилиты ввода(анонс)
 void clear_input_buffer(void);                
@@ -336,125 +338,6 @@ void write_diary_to_file(const char *filename, const char *text) {
     printf("Записано в %s.\n", filename);
 }
 
-char** allocate_map(int height, int width) {
-    char **map = (char**)malloc(height * sizeof(char*));
-    if (map == NULL) { printf("Ошибка выделения памяти!\n"); exit(1); }
-    for (int i = 0; i < height; i++) {
-        map[i] = (char*)malloc(width * sizeof(char));
-        if (map[i] == NULL) { printf("Ошибка выделения памяти!\n"); exit(1); }
-    }
-    return map;
-}
-
-void free_map(char **map, int height) {
-    if (map == NULL) return;
-    for (int i = 0; i < height; i++) free(map[i]);
-    free(map);
-}
-
-void generate_forest_map(char **map, int height, int width, int *p_y, int *p_x, int *portal_y, int *portal_x, int portal_active) {
-    for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) {
-            int r = rand() % 100;
-            if (r < 10) map[i][j] = TREE;
-            else if (r < 20) map[i][j] = STONE;
-            else map[i][j] = EMPTY;
-        }
-    }
-    if (portal_active) {
-        int p_placed = 0;
-        while (!p_placed) {
-            int ty = rand() % height;
-            int tx = rand() % width;
-            if (map[ty][tx] == EMPTY) { map[ty][tx] = PORTAL; *portal_y = ty; *portal_x = tx; p_placed = 1; }
-        }
-    }
-    int h_placed = 0;
-    while (!h_placed) {
-        int ty = rand() % height;
-        int tx = rand() % width;
-        if (map[ty][tx] == EMPTY) { *p_y = ty; *p_x = tx; h_placed = 1; }
-    }
-}
-
-void print_map(char **map, int height, int width, int depth, int edge_crosses) {
-    printf("\n=== Лес-кольцо (Глубина: %d) ===\n", depth);
-    printf("Переходов через край: %d/3\n", edge_crosses);
-    printf("Управление: W, A, S, D (движение), Q (выход)\n\n");
-    for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) printf("%c", map[i][j]);
-        printf("\n");
-    }
-}
-
-void adventure_mode(int *current_day, int *current_hour, char farmer_name[]) {
-    int height = MAP_MIN_SIZE + rand() % (MAP_MAX_SIZE - MAP_MIN_SIZE + 1);
-    int width = MAP_MIN_SIZE + rand() % (MAP_MAX_SIZE - MAP_MIN_SIZE + 1);
-    char **map = allocate_map(height, width);
-    int p_y, p_x, portal_y = -1, portal_x = -1, portal_active = 0, edge_crosses = 0, depth = 1;
-    char action;
-
-    generate_forest_map(map, height, width, &p_y, &p_x, &portal_y, &portal_x, portal_active);
-    map[p_y][p_x] = PLAYER;
-
-    while (1) {
-        print_map(map, height, width, depth, edge_crosses);
-        printf("Ваш ход: ");
-        scanf(" %c", &action);
-        clear_input_buffer();
-
-        if (action == 'q' || action == 'Q') { printf("Возврат на ферму.\n"); break; }
-
-        int new_y = p_y, new_x = p_x;
-        if (action == 'w' || action == 'W') new_y--;
-        else if (action == 's' || action == 'S') new_y++;
-        else if (action == 'a' || action == 'A') new_x--;
-        else if (action == 'd' || action == 'D') new_x++;
-        else continue;
-
-        int crossed_edge = 0;
-        if (new_y < 0) { new_y = height - 1; crossed_edge = 1; }
-        else if (new_y >= height) { new_y = 0; crossed_edge = 1; }
-        if (new_x < 0) { new_x = width - 1; crossed_edge = 1; }
-        else if (new_x >= width) { new_x = 0; crossed_edge = 1; }
-
-        if (map[new_y][new_x] == TREE || map[new_y][new_x] == STONE) {
-            printf("Путь заблокирован.\n"); continue;
-        }
-
-        map[p_y][p_x] = EMPTY;
-        p_y = new_y; p_x = new_x;
-
-        if (map[p_y][p_x] == PORTAL) {
-            printf("Вы нашли портал! Переход...\n");
-            (*current_hour)++;
-            if (*current_hour >= 24) { *current_hour = 0; (*current_day)++; }
-            free_map(map, height);
-            height = MAP_MIN_SIZE + rand() % (MAP_MAX_SIZE - MAP_MIN_SIZE + 1);
-            width = MAP_MIN_SIZE + rand() % (MAP_MAX_SIZE - MAP_MIN_SIZE + 1);
-            map = allocate_map(height, width);
-            depth++; edge_crosses = 0; portal_active = 0;
-            generate_forest_map(map, height, width, &p_y, &p_x, &portal_y, &portal_x, portal_active);
-        }
-        map[p_y][p_x] = PLAYER;
-
-        if (crossed_edge) {
-            edge_crosses++;
-            printf("Край леса пересечен (закольцовано)!\n");
-            if (edge_crosses >= 3 && !portal_active) {
-                portal_active = 1;
-                printf("Вы заблудились! Появился портал (P).\n");
-                int p_placed = 0;
-                while (!p_placed) {
-                    int ty = rand() % height;
-                    int tx = rand() % width;
-                    if (map[ty][tx] == EMPTY) { map[ty][tx] = PORTAL; portal_y = ty; portal_x = tx; p_placed = 1; }
-                }
-            }
-        }
-    }
-    free_map(map, height);
-}
 // функции
 int main(void) {
     char item_names[MAX_ITEMS][MAX_NAME_LEN];   
